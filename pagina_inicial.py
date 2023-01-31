@@ -11,7 +11,7 @@ COLORS = ["#fefae0", "#dda15e", "#bc6c25", "#606c38", "#283618"]
 class Inicial:
     def __init__(self):
         self.brain = Brain
-        self.colors = self.brain.get_data(self)[2]
+        self.colors = self.brain.get_data(self)[0]
 
         self.window_main = Tk()
         self.window_main.title("Vibe Verde")

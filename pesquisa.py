@@ -5,8 +5,9 @@ from lista_pesquisa import ListaPesquisa
 
 class Pesquisa:
     def __init__(self, init):
+        self.lista_pesquisa = ListaPesquisa
         self.init = init
-        self.colors = self.init.brain.get_data(self)[2]
+        self.colors = self.init.brain.get_data(self)[0]
 
         self.window_pesquisa = Toplevel()
         self.window_pesquisa.title("Pesquisa")
@@ -24,14 +25,16 @@ class Pesquisa:
             'Verdana', 12), bg=self.colors[0], fg=self.colors[3], variable=self.radio_base, command=self.radio_used)
         self.radio_categoria.grid(row=1, column=3, columnspan=3)
 
-        self.divisor = Label(self.window_pesquisa, text="_____________________________\n", font=(
+        self.divisor = Label(self.window_pesquisa, text="________________________________\n", font=(
             'Verdana', 16, "bold"), bg=self.colors[0], fg=self.colors[3])
         self.divisor.grid(row=2, column=0, columnspan=6)
 
         # pesquisar por código
-        self.codigo_label = Label(self.window_pesquisa, text="Código da peça:", font=(
-            'Verdana', 12), bg=self.colors[0], fg=self.colors[3])
+        self.codigo_label = Label(self.window_pesquisa, text="Digite Código da peça:", font=(
+            'Verdana', 9, 'bold'), bg=self.colors[0], fg=self.colors[3])
         self.codigo_entrada = Entry(self.window_pesquisa, width=47)
+        self.vazio_codigo_label = Label(self.window_pesquisa, text="\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", font=(
+            'Verdana', 6), bg=self.colors[0], fg=self.colors[3])
 
         # pesquisar por categoria
         # // pesquisar por vendidos
@@ -55,15 +58,15 @@ class Pesquisa:
         # // pesquisar por categoria
         self.categoria_label = Label(self.window_pesquisa, text="Pesquisar Categoria:", font=(
             'Verdana', 9, 'bold'), bg=self.colors[0], fg=self.colors[3])
-        categorias_var = Variable(value=self.init.brain.get_data(self)[1])
+        categorias_var = Variable(value=self.init.brain.get_data(self)[2])
         self.categoria_lista = Listbox(
-            master=self.window_pesquisa, height=8, width=20, listvariable=categorias_var, fg=self.colors[4], selectmode=MULTIPLE, exportselection=0)
+            master=self.window_pesquisa, height=11, width=20, listvariable=categorias_var, fg=self.colors[4], selectmode=MULTIPLE, exportselection=0)
         # // pesquisar por cor
         self.cores_label = Label(self.window_pesquisa, text="Pesquisar Cor:", font=(
             'Verdana', 9, 'bold'), bg=self.colors[0], fg=self.colors[3])
-        cores_var = Variable(value=self.init.brain.get_data(self)[0])
+        cores_var = Variable(value=self.init.brain.get_data(self)[1])
         self.cores_lista = Listbox(
-            master=self.window_pesquisa, height=8, width=15, listvariable=cores_var, selectmode=MULTIPLE, fg=self.colors[4], exportselection=0)
+            master=self.window_pesquisa, height=11, width=15, listvariable=cores_var, selectmode=MULTIPLE, fg=self.colors[4], exportselection=0)
         # // pesquisar por genero
         self.genero_label = Label(self.window_pesquisa, text="Pesquisar Gênero:", font=(
             'Verdana', 9, 'bold'), bg=self.colors[0], fg=self.colors[3])
@@ -73,18 +76,18 @@ class Pesquisa:
         # // pesquisar por tamanho
         self.tamanho_label = Label(self.window_pesquisa, text="Pesquisar Tamanho:", font=(
             'Verdana', 9, 'bold'), bg=self.colors[0], fg=self.colors[3])
-        tamanho_var = Variable(value=self.init.brain.pegar_tamanhos())
+        tamanho_var = Variable(value=self.init.brain.get_data(self)[4])
         self.tamanho_lista = Listbox(
-            master=self.window_pesquisa, height=3, width=20, listvariable=tamanho_var, selectmode=MULTIPLE, fg=self.colors[4], exportselection=0)
+            master=self.window_pesquisa, height=6, width=20, listvariable=tamanho_var, fg=self.colors[4], selectmode=MULTIPLE, exportselection=0)
 
         # botao de pesquisar
-        self.divisor2 = Label(self.window_pesquisa, text="_____________________________\n", font=(
+        self.divisor2 = Label(self.window_pesquisa, text="________________________________\n", font=(
             'Verdana', 16, "bold"), bg=self.colors[0], fg=self.colors[3])
-        self.divisor2.grid(row=19, column=0, columnspan=6)
+        self.divisor2.grid(row=12, column=0, columnspan=6)
 
         self.cancelar_button = Button(
-            self.window_pesquisa, text="Cancelar", width=12, bg=self.colors[1], fg=self.colors[4], highlightthickness=0, font=('Verdana', 10), command=self.cancelar)
-        self.cancelar_button.grid(row=20, column=0)
+            self.window_pesquisa, text="Cancelar", width=15, bg=self.colors[1], fg=self.colors[4], highlightthickness=0, font=('Verdana', 10), command=self.cancelar)
+        self.cancelar_button.grid(row=13, column=0)
 
         self.pesquisar_button = Button(self.window_pesquisa, text="Pesquisar", font=(
             'Verdana', 10), bg=self.colors[1], fg=self.colors[4], width=42, highlightthickness=0, command=self.pesquisar)
@@ -112,12 +115,14 @@ class Pesquisa:
 
             self.codigo_label.grid(row=3, column=0, columnspan=2)
             self.codigo_entrada.grid(row=3, column=2, columnspan=4)
-            self.pesquisar_button.grid(row=20, column=1, columnspan=5)
+            self.vazio_codigo_label.grid(row=4, column=0, columnspan=6)
+            self.pesquisar_button.grid(row=13, column=1, columnspan=5)
             self.window_pesquisa.update()
 
         elif self.radio_base.get() == 2:
             self.codigo_label.grid_forget()
             self.codigo_entrada.grid_forget()
+            self.vazio_codigo_label.grid_forget()
 
             self.radio_ambos.grid(row=3, column=0, columnspan=2)
             self.radio_estoque.grid(row=3, column=2, columnspan=2)
@@ -135,14 +140,32 @@ class Pesquisa:
             self.genero_lista.grid(row=8, column=4, columnspan=2)
             self.tamanho_label.grid(row=9, column=4, columnspan=2)
             self.tamanho_lista.grid(row=10, column=4, columnspan=2)
-            self.pesquisar_button.grid(row=20, column=1, columnspan=5)
+            self.pesquisar_button.grid(row=13, column=1, columnspan=5)
             self.window_pesquisa.update()
 
     def cancelar(self):
         self.window_pesquisa.destroy()
 
     def pesquisar(self):
-        self.resultado_pesquisa = {}
-        ListaPesquisa(self.init, self.resultado_pesquisa)
-        # gerar lista conforme pesquisa
-        # jogar lista pra janela de listbox
+        if self.radio_base.get() == 1:
+            self.df_pesquisa = self.init.brain.get_pesquisa_code(
+                self.codigo_entrada.get())
+            self.data = self.codigo_entrada.get()
+        elif self.radio_base.get() == 2:
+            self.data_pesquisa = [self.radio_venda.get(), self.cores_lista.curselection(), self.categoria_lista.curselection(
+            ), self.genero_lista.curselection(), self.tamanho_lista.curselection(), self.marca_entrada.get().title(), self.desc_entrada.get()]
+            self.df_pesquisa = self.init.brain.get_pesquisa(
+                self.init.brain, self.data_pesquisa)
+
+        self.lista_pesquisa.criar_lista(
+            self, self.df_pesquisa, self.window_pesquisa)
+        self.window_pesquisa.update()
+
+    def editar_roupa(self):
+        selection = self.resultado_lista.get(
+            self.resultado_lista.curselection())
+        selection_code = int(selection.split(" ")[0][1:-1])
+        print(selection_code)
+
+    def adicionar_venda(self):
+        pass

@@ -5,7 +5,7 @@ class Registradora:
 
     def __init__(self, init):
         self.init = init
-        self.colors = self.init.brain.get_data(self)[2]
+        self.colors = self.init.brain.get_data(self)[0]
 
         self.window_register = Toplevel()
         self.window_register.title("Registrar Peça")
@@ -33,72 +33,67 @@ class Registradora:
             self.window_register, fg=self.colors[4], width=47)
         self.marca_entrada.grid(row=3, column=1, columnspan=3)
 
-        self.tamanho_label = Label(self.window_register, text="Tamanho:", font=(
-            'Verdana', 9, "bold"), bg=self.colors[0], fg=self.colors[3])
-        self.tamanho_label.grid(row=4, column=0)
-        self.tamanho_entrada = Entry(
-            self.window_register, fg=self.colors[4], width=17)
-        self.tamanho_entrada.grid(row=4, column=1)
-
         self.valor_compra_label = Label(self.window_register, text="Valor Compra:", font=(
             'Verdana', 9, "bold"), bg=self.colors[0], fg=self.colors[3])
-        self.valor_compra_label.grid(row=5, column=0)
+        self.valor_compra_label.grid(row=4, column=0)
         self.valor_compra_entrada = Entry(
-            self.window_register, fg=self.colors[4], width=17)
-        self.valor_compra_entrada.grid(row=5, column=1)
+            self.window_register, fg=self.colors[4], width=13)
+        self.valor_compra_entrada.grid(row=4, column=1)
 
         self.valor_venda_label = Label(self.window_register, text="Valor Venda:", font=(
             'Verdana', 9, "bold"), bg=self.colors[0], fg=self.colors[3])
-        self.valor_venda_label.grid(row=6, column=0)
+        self.valor_venda_label.grid(row=4, column=2)
         self.valor_venda_entrada = Entry(
-            self.window_register, fg=self.colors[4], width=17)
-        self.valor_venda_entrada.grid(row=6, column=1)
-
-        self.genero_label = Label(self.window_register, text="Genero:", font=(
-            'Verdana', 9, "bold"), bg=self.colors[0], fg=self.colors[3])
-        self.genero_label.grid(row=4, column=2)
-        self.radio_state = IntVar()
-        self.radio_genero0 = Radiobutton(
-            self.window_register, text="Feminino", bg=self.colors[0], value=0, variable=self.radio_state)
-        self.radio_genero1 = Radiobutton(
-            self.window_register, text="Masculino", bg=self.colors[0], value=1, variable=self.radio_state)
-        self.radio_genero2 = Radiobutton(
-            self.window_register, text="Unissex", bg=self.colors[0], value=2, variable=self.radio_state)
-        self.radio_genero0.grid(row=4, column=3)
-        self.radio_genero1.grid(row=5, column=3)
-        self.radio_genero2.grid(row=6, column=3)
+            self.window_register, fg=self.colors[4], width=13)
+        self.valor_venda_entrada.grid(row=4, column=3)
 
         self.vazio_label = Label(self.window_register, text="\n", font=(
             'Verdana', 6), bg=self.colors[0], fg=self.colors[3])
-        self.vazio_label.grid(row=7, column=0, columnspan=4)
+        self.vazio_label.grid(row=5, column=0, columnspan=4)
+
+        self.tamanho_label = Label(self.window_register, text="Tamanho:", font=(
+            'Verdana', 9, "bold"), bg=self.colors[0], fg=self.colors[3])
+        self.tamanho_label.grid(row=6, column=0, columnspan=2)
+        tamanhos_var = Variable(value=self.init.brain.get_data(self)[4])
+        self.tamanhos_lista = Listbox(
+            master=self.window_register, height=4, width=20, selectmode=MULTIPLE, listvariable=tamanhos_var, fg=self.colors[4], exportselection=0)
+        self.tamanhos_lista.grid(row=7, column=0, columnspan=2)
+
+        self.genero_label = Label(self.window_register, text="Genero:", font=(
+            'Verdana', 9, "bold"), bg=self.colors[0], fg=self.colors[3])
+        self.genero_label.grid(row=6, column=2, columnspan=2)
+        generos_var = Variable(value=self.init.brain.get_data(self)[3])
+        self.genero_lista = Listbox(
+            master=self.window_register, height=4, width=20, listvariable=generos_var, fg=self.colors[4], exportselection=0)
+        self.genero_lista.grid(row=7, column=2, columnspan=2)
 
         self.cores_label = Label(self.window_register, text="Cor:", font=(
             'Verdana', 9, "bold"), bg=self.colors[0], fg=self.colors[3])
-        self.cores_label.grid(row=8, column=0, columnspan=2)
+        self.cores_label.grid(row=9, column=0, columnspan=2)
         cores_var = Variable(value=self.init.brain.get_data(self)[0])
         self.cores_lista = Listbox(
             master=self.window_register, height=8, width=20, listvariable=cores_var, selectmode=MULTIPLE, fg=self.colors[4], exportselection=0)
-        self.cores_lista.grid(row=9, column=0, columnspan=2)
+        self.cores_lista.grid(row=10, column=0, columnspan=2)
 
         self.categoria_label = Label(self.window_register, text="Categoria:", font=(
             'Verdana', 9, "bold"), bg=self.colors[0], fg=self.colors[3])
-        self.categoria_label.grid(row=8, column=2, columnspan=2)
+        self.categoria_label.grid(row=9, column=2, columnspan=2)
         categorias_var = Variable(value=self.init.brain.get_data(self)[1])
         self.categoria_lista = Listbox(
             master=self.window_register, height=8, width=20, listvariable=categorias_var, fg=self.colors[4], exportselection=0)
-        self.categoria_lista.grid(row=9, column=2, columnspan=2)
+        self.categoria_lista.grid(row=10, column=2, columnspan=2)
 
         self.divisor = Label(self.window_register, text="__________________________\n", font=(
             'Verdana', 16, "bold"), bg=self.colors[0], fg=self.colors[3])
-        self.divisor.grid(row=10, column=0, columnspan=4)
+        self.divisor.grid(row=11, column=0, columnspan=4)
 
         self.cancelar_button = Button(
             self.window_register, text="Cancelar", width=12, bg=self.colors[1], fg=self.colors[4], highlightthickness=0, font=('Verdana', 10), command=self.cancelar)
-        self.cancelar_button.grid(row=11, column=0)
+        self.cancelar_button.grid(row=12, column=0)
 
         self.registrar_button = Button(
             self.window_register, text="Registrar Peça", width=37, bg=self.colors[1], fg=self.colors[4], highlightthickness=0, font=('Verdana', 10), command=self.salvar_conteudo)
-        self.registrar_button.grid(row=11, column=1, columnspan=3)
+        self.registrar_button.grid(row=12, column=1, columnspan=3)
 
         self.window_register.mainloop()
 
@@ -108,10 +103,10 @@ class Registradora:
             self.piece = {"cod": self.code,
                           "desc": self.descrição_geral_entrada.get().title(),
                           "categoria": self.categoria_lista.get(self.categoria_lista.curselection()).title(),
-                          "tamanho": self.init.brain.preencher_vazio(self.tamanho_entrada.get()),
-                          "genero": self.init.brain.gerar_genero(self, self.radio_state.get()),
+                          "tamanho": self.init.brain.registrar_tamanho(self.tamanhos_lista.curselection()),
+                          "genero": self.genero_lista.get(self.genero_lista.curselection()).title(),
                           "marca": self.init.brain.preencher_vazio(self.marca_entrada.get()),
-                          "cor": self.init.brain.tuple_to_str(self.cores_lista.curselection()),
+                          "cor": self.init.brain.registrar_cor(self.cores_lista.curselection()),
                           "valor_compra": self.valor_compra_entrada.get(),
                           "valor_venda": self.init.brain.preencher_vazio(self.valor_venda_entrada.get()),
                           "data_entrada": self.init.brain.pegar_dia(),

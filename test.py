@@ -1,25 +1,9 @@
-# editar
+import pandas as pd
 
-# - pesquisar por categoria
-# - abre janela de edição
-# - possibilidade de deletar
-# - não pode pesquisar produtos já vendidos
 
-# vender
+def get_pesquisa_code(code):
+    df = pd.read_excel("roupas.xlsx")
+    print(df.loc[df["cod"] == 99265])
 
-# - pesquisar
-# - adicionar preço de venda
-# - adiciona autimatico data de venda
-# - adicionar em planilha de vendas (anual?)
 
-# gerar relatório
-
-# - diário
-# - semanal
-# - mensal
-# - estoque
-
-# gerar análises
-
-# - vendas por categoria
-# - outras...
+get_pesquisa_code(45104)
