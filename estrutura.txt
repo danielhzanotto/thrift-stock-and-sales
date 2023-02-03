@@ -1,0 +1,25 @@
+venda:
+    - código de venda (gerado)
+    - nome do cliente
+    - cidade
+    - modo de entrega (retirada, entrega, correios)
+    - itens (códigos e valor de venda)
+    - desconto
+    - data (gerado)
+    - gerar comprovante (tipo nota fiscal)
+
+pesquisar vendas:
+    - por código
+    - por cliente
+    - por peça
+    - por data
+
+gerar relatórios:
+
+configurações:
+    - nome do brechó
+    - info (cnpj, nome, endereço)
+    - adicionar ou remover categorias/cores/tamanho_lista
+    - editar cores e fontes?
+
+

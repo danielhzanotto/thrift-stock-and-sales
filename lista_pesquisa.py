@@ -34,8 +34,4 @@ class ListaPesquisa:
         self.adicionar_button.grid(row=13, column=8, columnspan=2)
 
     def criar_lista_roupas(self):
-        lista_roupas = []
-        for roupa in self.roupas_pesquisa.itertuples():
-            lista_roupas.append(
-                f"[{roupa[1]}] {roupa[3]} ({roupa[4]}): {roupa[2]}")
-        return lista_roupas
+        return [f"[{roupa[1]}] {roupa[3]} ({roupa[4]}): {roupa[2]}" for roupa in self.roupas_pesquisa.itertuples()]

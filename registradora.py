@@ -5,7 +5,7 @@ class Registradora:
 
     def __init__(self, init):
         self.init = init
-        self.colors = self.init.brain.get_data(self)[0]
+        self.colors = self.init.brain.get_data_dict()['cores_programa']
 
         self.window_register = Toplevel()
         self.window_register.title("Registrar Peça")
@@ -54,7 +54,8 @@ class Registradora:
         self.tamanho_label = Label(self.window_register, text="Tamanho:", font=(
             'Verdana', 9, "bold"), bg=self.colors[0], fg=self.colors[3])
         self.tamanho_label.grid(row=6, column=0, columnspan=2)
-        tamanhos_var = Variable(value=self.init.brain.get_data(self)[4])
+        tamanhos_var = Variable(
+            value=self.init.brain.get_data_dict()['tamanho'])
         self.tamanhos_lista = Listbox(
             master=self.window_register, height=4, width=20, selectmode=MULTIPLE, listvariable=tamanhos_var, fg=self.colors[4], exportselection=0)
         self.tamanhos_lista.grid(row=7, column=0, columnspan=2)
@@ -62,7 +63,7 @@ class Registradora:
         self.genero_label = Label(self.window_register, text="Genero:", font=(
             'Verdana', 9, "bold"), bg=self.colors[0], fg=self.colors[3])
         self.genero_label.grid(row=6, column=2, columnspan=2)
-        generos_var = Variable(value=self.init.brain.get_data(self)[3])
+        generos_var = Variable(value=self.init.brain.get_data_dict()['genero'])
         self.genero_lista = Listbox(
             master=self.window_register, height=4, width=20, listvariable=generos_var, fg=self.colors[4], exportselection=0)
         self.genero_lista.grid(row=7, column=2, columnspan=2)
@@ -70,7 +71,7 @@ class Registradora:
         self.cores_label = Label(self.window_register, text="Cor:", font=(
             'Verdana', 9, "bold"), bg=self.colors[0], fg=self.colors[3])
         self.cores_label.grid(row=9, column=0, columnspan=2)
-        cores_var = Variable(value=self.init.brain.get_data(self)[0])
+        cores_var = Variable(value=self.init.brain.get_data_dict()['cor'])
         self.cores_lista = Listbox(
             master=self.window_register, height=8, width=20, listvariable=cores_var, selectmode=MULTIPLE, fg=self.colors[4], exportselection=0)
         self.cores_lista.grid(row=10, column=0, columnspan=2)
@@ -78,7 +79,8 @@ class Registradora:
         self.categoria_label = Label(self.window_register, text="Categoria:", font=(
             'Verdana', 9, "bold"), bg=self.colors[0], fg=self.colors[3])
         self.categoria_label.grid(row=9, column=2, columnspan=2)
-        categorias_var = Variable(value=self.init.brain.get_data(self)[1])
+        categorias_var = Variable(
+            value=self.init.brain.get_data_dict()['categoria'])
         self.categoria_lista = Listbox(
             master=self.window_register, height=8, width=20, listvariable=categorias_var, fg=self.colors[4], exportselection=0)
         self.categoria_lista.grid(row=10, column=2, columnspan=2)
@@ -103,10 +105,10 @@ class Registradora:
             self.piece = {"cod": self.code,
                           "desc": self.descrição_geral_entrada.get().title(),
                           "categoria": self.categoria_lista.get(self.categoria_lista.curselection()).title(),
-                          "tamanho": self.init.brain.registrar_tamanho(self.tamanhos_lista.curselection()),
+                          "tamanho": self.init.brain.registrar_item(self.init.brain, self.tamanhos_lista.curselection(), 'tamanho'),
                           "genero": self.genero_lista.get(self.genero_lista.curselection()).title(),
                           "marca": self.init.brain.preencher_vazio(self.marca_entrada.get()),
-                          "cor": self.init.brain.registrar_cor(self.cores_lista.curselection()),
+                          "cor": self.init.brain.registrar_item(self.init.brain, self.cores_lista.curselection(), 'cor'),
                           "valor_compra": self.valor_compra_entrada.get(),
                           "valor_venda": self.init.brain.preencher_vazio(self.valor_venda_entrada.get()),
                           "data_entrada": self.init.brain.pegar_dia(),
@@ -119,7 +121,7 @@ class Registradora:
             if continuar:
                 self.descrição_geral_entrada.delete(0, END)
                 self.marca_entrada.delete(0, END)
-                self.tamanho_entrada.delete(0, END)
+                self.tamanhos_lista.selection_clear(0, END)
                 self.valor_compra_entrada.delete(0, END)
                 self.valor_venda_entrada.delete(0, END)
                 self.radio_genero0.select()

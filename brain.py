@@ -9,9 +9,10 @@ class Brain:
     def __init__(self):
         pass
 
-    def get_data(self):
-        df = pd.read_json("data.json", typ='series')
-        return [categoria for categoria in df]
+    def get_data_dict():
+        df = pd.read_excel("data.xlsx", sheet_name="categorias")
+        dict_df = df.to_dict(orient='list')
+        return {v[0]: [i for i in v[1] if str(i) != 'nan'] for v in dict_df.items()}
 
     def gerar_cod(self):
         cod = randint(00000, 99999)
@@ -22,39 +23,32 @@ class Brain:
         return cod
 
     def checar_cod_existe(self, codigo):
-        df = pd.read_excel("roupas.xlsx")
+        df = pd.read_excel("data.xlsx", sheet_name="estoque")
         if codigo in list(df["cod"]):
             return True
         elif codigo not in list(df["cod"]):
             return False
 
     def salvar_roupa(info):
-        df = pd.read_excel("roupas.xlsx")
+        df = pd.read_excel("data.xlsx", sheet_name="estoque")
         roupa = pd.DataFrame(info, index=[0])
         df = pd.concat([df, roupa], ignore_index=True)
-        df.to_excel("roupas.xlsx", index=False)
+        with pd.ExcelWriter("data.xlsx", mode="a", if_sheet_exists='overlay') as f:
+            df.to_excel(f, sheet_name="estoque", index=False)
 
-    def registrar_cor(data):
-        data_json = pd.read_json("data.json", typ='series')
+    def editar_roupa(info):
+        df = pd.read_excel("data.xlsx", sheet_name="estoque")
+        for key in info.keys():
+            df.loc[df['cod'] == info['cod'], key] = info[key]
+        with pd.ExcelWriter("data.xlsx", mode="a", if_sheet_exists='replace') as f:
+            df.to_excel(f, sheet_name="estoque", index=False)
+
+    def registrar_item(self, data, tipo):
+        data_ = self.get_data_dict()
         data_str = ""
         for i in data:
-            data_str = data_str + " " + data_json[0][int(i)].title()
+            data_str += str(data_[tipo][int(i)]).title() + " "
         return data_str
-
-    def registrar_tamanho(data):
-        data_json = pd.read_json("data.json", typ='series')
-        data_str = ""
-        for i in data:
-            data_str = data_str + " " + data_json[4][int(i)].title()
-        return data_str
-
-    def continuar_cadastro(window, cod):
-        return messagebox.askyesno(parent=window,
-                                   title="Cadastro Feito!", message=f"Sua peça foi cadastrada com o código {cod}!\nGostaria de continuar cadastrando?")
-
-    def categoria_em_branco(window, cod):
-        return messagebox.showinfo(parent=window,
-                                   title="Ooops!", message=f"Não deixe {cod} em branco!")
 
     def preencher_vazio(cat):
         if len(cat) == 0:
@@ -65,13 +59,12 @@ class Brain:
     def pegar_dia():
         return dt.today().strftime('%Y-%m-%d')
 
-    def pegar_marcas():
-        df = pd.read_excel("roupas.xlsx")
-        return list(set(df["marca"]))
-
     def get_pesquisa_code(code):
-        df = pd.read_excel("roupas.xlsx")
+        df = pd.read_excel("data.xlsx", sheet_name="estoque")
         return df.loc[df["cod"] == int(code)]
+
+    def df_to_dict(df):
+        return df.to_dict(orient="list")
 
     def get_pesquisa_list(l, column, dataframe):
         counter = len(l)
@@ -86,8 +79,8 @@ class Brain:
         return df_2
 
     def get_pesquisa(self, pesquisa_info):
-        df = pd.read_excel("roupas.xlsx")
-        data_info = pd.read_json("data.json", typ='series')
+        df = pd.read_excel("data.xlsx", sheet_name="estoque")
+        data_info = self.get_data_dict()
 
         if pesquisa_info[0] == 1:
             df = df.loc[df["data_saida"] != 0]
@@ -109,3 +102,20 @@ class Brain:
             df = self.get_pesquisa_list(ind_list, "desc", df)
 
         return df
+
+    def lista_select(self, lista, indexes):
+        df = self.get_data_dict()
+        lista_index = str(indexes).strip().split(" ")
+        return [df[lista].index(i) for i in lista_index]
+
+    def continuar_cadastro(window, cod):
+        return messagebox.askyesno(parent=window,
+                                   title="Cadastro Feito!", message=f"Sua peça foi cadastrada com o código {cod}!\nGostaria de continuar cadastrando?")
+
+    def confirmar_editar(window):
+        return messagebox.askyesno(parent=window,
+                                   title="Confirmar edição", message=f"Você tem certeza que gostaria de editar esta peça?\nTodas as informações anteriores serão perdidas.")
+
+    def categoria_em_branco(window, cod):
+        return messagebox.showinfo(parent=window,
+                                   title="Ooops!", message=f"Não deixe {cod} em branco!")

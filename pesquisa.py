@@ -1,13 +1,15 @@
 from tkinter import *
 
 from lista_pesquisa import ListaPesquisa
+from editar import Editora
 
 
 class Pesquisa:
     def __init__(self, init):
         self.lista_pesquisa = ListaPesquisa
+        self.editora = Editora
         self.init = init
-        self.colors = self.init.brain.get_data(self)[0]
+        self.colors = self.init.brain.get_data_dict()['cores_programa']
 
         self.window_pesquisa = Toplevel()
         self.window_pesquisa.title("Pesquisa")
@@ -58,25 +60,28 @@ class Pesquisa:
         # // pesquisar por categoria
         self.categoria_label = Label(self.window_pesquisa, text="Pesquisar Categoria:", font=(
             'Verdana', 9, 'bold'), bg=self.colors[0], fg=self.colors[3])
-        categorias_var = Variable(value=self.init.brain.get_data(self)[2])
+        categorias_var = Variable(
+            value=self.init.brain.get_data_dict()['categoria'])
         self.categoria_lista = Listbox(
             master=self.window_pesquisa, height=11, width=20, listvariable=categorias_var, fg=self.colors[4], selectmode=MULTIPLE, exportselection=0)
         # // pesquisar por cor
         self.cores_label = Label(self.window_pesquisa, text="Pesquisar Cor:", font=(
             'Verdana', 9, 'bold'), bg=self.colors[0], fg=self.colors[3])
-        cores_var = Variable(value=self.init.brain.get_data(self)[1])
+        cores_var = Variable(value=self.init.brain.get_data_dict()['cor'])
         self.cores_lista = Listbox(
             master=self.window_pesquisa, height=11, width=15, listvariable=cores_var, selectmode=MULTIPLE, fg=self.colors[4], exportselection=0)
         # // pesquisar por genero
         self.genero_label = Label(self.window_pesquisa, text="Pesquisar Gênero:", font=(
             'Verdana', 9, 'bold'), bg=self.colors[0], fg=self.colors[3])
-        genero_var = Variable(value=self.init.brain.get_data(self)[3])
+        genero_var = Variable(
+            value=self.init.brain.get_data_dict()['genero'])
         self.genero_lista = Listbox(
             master=self.window_pesquisa, height=3, width=20, listvariable=genero_var, selectmode=MULTIPLE, fg=self.colors[4], exportselection=0)
         # // pesquisar por tamanho
         self.tamanho_label = Label(self.window_pesquisa, text="Pesquisar Tamanho:", font=(
             'Verdana', 9, 'bold'), bg=self.colors[0], fg=self.colors[3])
-        tamanho_var = Variable(value=self.init.brain.get_data(self)[4])
+        tamanho_var = Variable(
+            value=self.init.brain.get_data_dict()['tamanho'])
         self.tamanho_lista = Listbox(
             master=self.window_pesquisa, height=6, width=20, listvariable=tamanho_var, fg=self.colors[4], selectmode=MULTIPLE, exportselection=0)
 
@@ -165,7 +170,10 @@ class Pesquisa:
         selection = self.resultado_lista.get(
             self.resultado_lista.curselection())
         selection_code = int(selection.split(" ")[0][1:-1])
-        print(selection_code)
+        df_code = self.init.brain.get_pesquisa_code(selection_code)
+        df_dict = self.init.brain.df_to_dict(df_code)
+        self.window_pesquisa.destroy()
+        Editora(self.init, df_dict)
 
     def adicionar_venda(self):
         pass
