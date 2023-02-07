@@ -5,12 +5,11 @@ from brain import Brain
 from pesquisa import Pesquisa
 from venda import Venda
 
-COLORS = ["#fefae0", "#dda15e", "#bc6c25", "#606c38", "#283618"]
-
 
 class Inicial:
     def __init__(self):
         self.brain = Brain
+        self.reg = Registradora
         self.colors = self.brain.get_data_dict()['cores_programa']
 
         self.window_main = Tk()
@@ -37,13 +36,13 @@ class Inicial:
         self.window_main.mainloop()
 
     def registrar(self):
-        Registradora(self)
+        Registradora(self, 'registro', 0)
 
     def buscar(self):
         Pesquisa(self)
 
     def iniciar_venda(self):
-        Venda()
+        Venda(self)
 
 
 Inicial()

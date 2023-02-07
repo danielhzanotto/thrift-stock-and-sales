@@ -83,9 +83,9 @@ class Brain:
         data_info = self.get_data_dict()
 
         if pesquisa_info[0] == 1:
-            df = df.loc[df["data_saida"] != 0]
+            df = df.loc[df["cod_venda"] != 0]
         elif pesquisa_info[0] == 2:
-            df = df.loc[df["data_saida"] == 0]
+            df = df.loc[df["cod_venda"] == 0]
 
         for n in range(1, 5):
             if len(pesquisa_info[n]) != 0:
@@ -119,3 +119,39 @@ class Brain:
     def categoria_em_branco(window, cod):
         return messagebox.showinfo(parent=window,
                                    title="Ooops!", message=f"Não deixe {cod} em branco!")
+
+    def venda_invalido(window, cod):
+        return messagebox.showinfo(parent=window,
+                                   title="Ooops!", message=f"Valor de venda inválido!\nFavor não deixar zerado, igual ou menor que o valor de compra.")
+
+
+class BrainVendas:
+    def __init__(self) -> None:
+        pass
+
+    def gerar_cod_venda(self):
+        cod = "V" + str(randint(00000, 99999))
+        cod_existe = self.checar_cod_venda_existe(self, cod)
+        while cod_existe:
+            cod = "V" + str(randint(00000, 99999))
+            cod_existe = self.checar_cod_venda_existe(self, cod)
+        return cod
+
+    def checar_cod_venda_existe(self, codigo):
+        df = pd.read_excel("data.xlsx", sheet_name="vendas")
+        if codigo in list(df["cod_venda"]):
+            return True
+        elif codigo not in list(df["cod_venda"]):
+            return False
+
+    def pegar_produto_venda_code(code):
+        produto = Brain.get_pesquisa_code(int(code))
+        produto_dict = produto.to_dict(orient="list")
+        produto_str = f"[{produto_dict['cod'][0]}]{produto_dict['categoria'][0]}: {produto_dict['desc'][0]}"
+        produto_str_f = produto_str.ljust(
+            52, "-") + f"R${produto_dict['valor_venda'][0]},00"
+        return [produto_str_f, int(produto_dict['valor_venda'][0])]
+
+    def confirmar_cancelar(window):
+        return messagebox.askyesno(parent=window,
+                                   title="Confirmar cancelamento", message=f"Você tem certeza que gostaria de cancelar?\nTodas as informações serão perdidas.")

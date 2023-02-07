@@ -1,13 +1,11 @@
 from tkinter import *
 
 from lista_pesquisa import ListaPesquisa
-from editar import Editora
 
 
 class Pesquisa:
     def __init__(self, init):
         self.lista_pesquisa = ListaPesquisa
-        self.editora = Editora
         self.init = init
         self.colors = self.init.brain.get_data_dict()['cores_programa']
 
@@ -173,7 +171,7 @@ class Pesquisa:
         df_code = self.init.brain.get_pesquisa_code(selection_code)
         df_dict = self.init.brain.df_to_dict(df_code)
         self.window_pesquisa.destroy()
-        Editora(self.init, df_dict)
+        self.init.reg(self.init, 'editor', df_dict)
 
     def adicionar_venda(self):
         pass

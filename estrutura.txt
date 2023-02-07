@@ -5,6 +5,7 @@ venda:
     - modo de entrega (retirada, entrega, correios)
     - itens (códigos e valor de venda)
     - desconto
+    - forma de pagamento
     - data (gerado)
     - gerar comprovante (tipo nota fiscal)
 
