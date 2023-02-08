@@ -1,19 +1,27 @@
 from tkinter import *
-import brain
+from brain import Brain, BrainVendas
+from pesquisa import Pesquisa
 
 
 class Venda:
-    def __init__(self, init):
-        self.init = init
-        self.brain_data = brain.Brain
-        self.brain_vendas = brain.BrainVendas
-        self.colors = self.brain_data.get_data_dict()['cores_programa']
+    def __init__(self, produto=""):
+        self.pesquisa = Pesquisa
+        self.brain = Brain
+        self.brain_vendas = BrainVendas
+        self.colors = self.brain.get_data_dict()['cores_programa']
+
+        self.codigo = self.brain_vendas.gerar_cod_venda(self.brain_vendas)
+        self.produtos_venda_final = []
+        self.valor_venda_final = []
+        self.valor_desconto = 0
+        self.valor_entrega = 0
+        self.dia = self.brain.pegar_dia()
 
         self.window_venda = Toplevel()
         self.window_venda.title("Iniciar Venda")
         self.window_venda.config(padx=20, pady=20, bg=self.colors[0])
 
-        self.mensagem_inicio = Label(self.window_venda, text=f"Venda Cod. {self.brain_vendas.gerar_cod_venda(self.brain_vendas)} ({self.brain_data.pegar_dia()})", font=(
+        self.mensagem_inicio = Label(self.window_venda, text=f"Venda {self.codigo}", font=(
             'Verdana', 16, "bold"), bg=self.colors[0], fg=self.colors[3])
         self.mensagem_inicio.grid(row=0, column=0, columnspan=6)
 
@@ -115,10 +123,12 @@ class Venda:
         self.desconto_radio2.grid(row=11, column=2)
         self.desconto_radio3.grid(row=11, column=4)
         self.desconto_perc_entrada = Entry(
-            self.window_venda, fg=self.colors[4], width=14)
+            self.window_venda, fg=self.colors[4], width=14, state='disabled')
+        self.desconto_perc_entrada.bind('<KeyRelease>', self.fill_value)
         self.desconto_perc_entrada.grid(row=11, column=3)
         self.desconto_entrada = Entry(
-            self.window_venda, fg=self.colors[4], width=5)
+            self.window_venda, fg=self.colors[4], width=5, state='disabled')
+        self.desconto_entrada.bind('<KeyRelease>', self.fill_value)
         self.desconto_entrada.grid(row=11, column=5)
 
         self.entrega_label = Label(self.window_venda, text="Entrega:", font=(
@@ -139,12 +149,29 @@ class Venda:
         self.entrega_radio4.grid(row=12, column=4)
         self.entrega_entrada = Entry(
             self.window_venda, fg=self.colors[4], width=5)
-        self.entrega_entrada.grid(row=12, column=5)
+        self.entrega_entrada.bind('<KeyRelease>', self.fill_value)
+        self.entrega_entrada_fixo = Label(
+            self.window_venda, text="0.00", font=(
+                'Verdana', 9, "bold"), bg=self.colors[0], fg=self.colors[3])
+        self.entrega_entrada_fixo.grid(row=12, column=5)
 
         self.valor_total_label = Label(self.window_venda, text="Total:", font=(
             'Verdana', 9, "bold"), bg=self.colors[0], fg=self.colors[3])
         self.valor_total_label.grid(row=14, column=0)
-        self.total_label = Label(self.window_venda, text=f"R$ {self.gerar_valor_total()}.00", font=(
+
+        self.valor_compra_label = Label(self.window_venda, text=f"R${float(sum(self.valor_venda_final)):.2f}", font=(
+            'Verdana', 9), bg=self.colors[0], fg=self.colors[3])
+        self.valor_compra_label.grid(row=14, column=1)
+
+        self.valor_desconto_label = Label(self.window_venda, text=f"- R${self.valor_desconto:.2f}", font=(
+            'Verdana', 9), bg=self.colors[0], fg=self.colors[3])
+        self.valor_desconto_label.grid(row=14, column=2)
+
+        self.valor_entrega_label = Label(self.window_venda, text=f"+ R${self.valor_entrega:.2f}", font=(
+            'Verdana', 9), bg=self.colors[0], fg=self.colors[3])
+        self.valor_entrega_label.grid(row=14, column=3)
+
+        self.total_label = Label(self.window_venda, text=self.gerar_valor_total(), font=(
             'Verdana', 12, "bold"), bg=self.colors[0], fg=self.colors[3])
         self.total_label.grid(row=14, column=4, columnspan=2)
 
@@ -160,34 +187,122 @@ class Venda:
             self.window_venda, text="Registrar Venda", bg=self.colors[1], fg=self.colors[4], highlightthickness=0, font=('Verdana', 10), command=self.registrar_venda, width=33)
         self.registrar_button.grid(row=16, column=2, columnspan=4)
 
+        if len(str(produto)) != 0:
+            self.adicionar_produto_pesquisa(produto)
+            self.window_venda.update()
+
         self.window_venda.mainloop()
 
-    def gerar_valor_total(self):
-        return 100
-
-    def entrega_used(self):
-        print(self.entrega_state.get())
-
-    def desconto_used(self):
-        print(self.desconto_state.get())
-
-    def pagamento_used(self):
-        print(self.pagamento_state.get())
-
     def cancelar(self):
-        pass
-
-    def registrar_venda(self):
-        pass
+        self.cancel = self.brain.confirmar_cancelar(self.window_venda)
+        if self.cancel:
+            self.window_venda.destroy()
 
     def adicionar_produto_venda(self):
-        self.produto_info = self.brain_vendas.pegar_produto_venda_code(
-            self.adicionar_entrada.get())
-
-        self.produto_lista.insert(END, self.produto_info[0])
+        self.adicionar_produto_pesquisa(self.adicionar_entrada.get())
 
     def pesquisar_produtos(self):
-        self.cancel = self.brain_vendas.confirmar_cancelar(self.window_venda)
+        self.pesquisa(self, 'venda')
+
+    def adicionar_produto_pesquisa(self, codigo):
+        produto_info = self.brain_vendas.pegar_produto_venda_code(
+            codigo)
+        if produto_info[0] not in self.produtos_venda_final:
+            self.produtos_venda_final.append(produto_info[0])
+            self.produto_lista.insert(END, produto_info[1])
+            self.valor_venda_final.append(produto_info[2])
+            self.fill_value()
 
     def remover_produto_venda(self):
         self.produto_lista.delete(self.produto_lista.curselection()[0])
+
+    def entrega_used(self):
+        if self.entrega_state.get() == 0:
+            self.entrega_entrada.grid_forget()
+            self.entrega_entrada.delete(0, END)
+            self.entrega_entrada_fixo.grid(row=12, column=5)
+            self.entrega_entrada_fixo.config(text="0.00")
+        elif self.entrega_state.get() == 2:
+            self.entrega_entrada.grid_forget()
+            self.entrega_entrada.delete(0, END)
+            self.entrega_entrada_fixo.grid(row=12, column=5)
+            self.entrega_entrada_fixo.config(text="5.00")
+        elif self.entrega_state.get() == 1 or self.entrega_state.get() == 3:
+            self.entrega_entrada_fixo.grid_forget()
+            self.entrega_entrada.delete(0, END)
+            self.entrega_entrada_fixo.config(text="0.00")
+            self.entrega_entrada.grid(row=12, column=5)
+
+        self.fill_value()
+
+    def pagamento_used(self):
+        self.pagamento = self.pagamento_state.get()
+
+    def gerar_valor_total(self):
+        self.valor_final = sum(self.valor_venda_final)
+
+        if len(self.desconto_entrada.get()) != 0:
+            self.valor_desconto = float(self.desconto_entrada.get())
+        elif len(self.desconto_perc_entrada.get()) != 0:
+            self.valor_desconto = self.valor_final * \
+                (float(self.desconto_perc_entrada.get())/100)
+
+        if len(self.entrega_entrada.get()) != 0:
+            self.valor_entrega = float(self.entrega_entrada.get())
+        elif int(self.entrega_entrada_fixo['text'][0]) != 0:
+            self.valor_entrega = float(self.entrega_entrada_fixo['text'][0])
+
+        self.valor_final -= self.valor_desconto
+        self.valor_final += self.valor_entrega
+
+        return f"R$ {float(self.valor_final): .2f}"
+
+    def fill_value(self, binder=1):
+        self.total_label.config(
+            text=self.gerar_valor_total())
+        self.valor_compra_label.config(
+            text=f"R${float(sum(self.valor_venda_final)):.2f}")
+        self.valor_desconto_label.config(text=f"- R${self.valor_desconto:.2f}")
+        self.valor_entrega_label.config(text=f"+ R${self.valor_entrega:.2f}")
+        self.window_venda.update()
+
+    def desconto_used(self):
+        if self.desconto_state.get() == 1:
+            self.desconto_perc_entrada.config(state='normal')
+            self.desconto_entrada.delete(0, END)
+            self.desconto_entrada.config(state='disabled')
+        elif self.desconto_state.get() == 2:
+            self.desconto_entrada.config(state='normal')
+            self.desconto_perc_entrada.delete(0, END)
+            self.desconto_perc_entrada.config(state='disabled')
+        elif self.desconto_state.get() == 0:
+            self.desconto_perc_entrada.delete(0, END)
+            self.desconto_entrada.delete(0, END)
+            self.desconto_entrada.config(state='disabled')
+            self.desconto_perc_entrada.config(state='disabled')
+
+        self.fill_value()
+
+    def registrar_venda(self):
+        print(self.codigo)
+        print(self.nome_entrada.get().title())
+        print(self.cpf_entrada.get())  # tem que ter formato de cpf
+        print(self.cidade_entrada.get().title())
+        if len(self.estado_entrada.get()) != 2 and self.estado_entrada.get().isalpha():
+            self.brain.valor_invalido(self.window_venda, 'UF')
+            pass
+        else:
+            print(self.estado_entrada.get().upper())
+        print(self.produtos_venda_final)
+        print(self.valor_final)
+        print(self.valor_entrega)
+        print(self.brain_vendas.pegar_nomes_metodos('tipo_entrega',
+              self.entrega_state.get()))
+        print(self.valor_desconto)
+        if self.pagamento_state.get() == 0:
+            self.brain.categoria_em_branco(self.window_venda, 'PAGAMENTO')
+        else:
+            print(self.brain_vendas.pegar_nomes_metodos('tipo_pagamento',
+                                                        self.pagamento_state.get() - 1))
+            print(self.pagamento_state.get())
+        print(self.dia)

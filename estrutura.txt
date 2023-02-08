@@ -20,7 +20,17 @@ gerar relatórios:
 configurações:
     - nome do brechó
     - info (cnpj, nome, endereço)
-    - adicionar ou remover categorias/cores/tamanho_lista
-    - editar cores e fontes?
+    - adicionar ou remover categorias
+    - alterar valor de entrega Local
+    - limpar cache
 
+devolução peça:
+    - devolver peça
+    - remover peça do estoque
 
+TODO:
+    - arrumar a pesquisa da venda para apenas aparecer produtos em estoque
+    - criar dicionario venda
+    - enviar dados venda pro banco de dados
+    - alterar dados do produto vendido 
+    - gerar comprovante de venda

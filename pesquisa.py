@@ -4,10 +4,11 @@ from lista_pesquisa import ListaPesquisa
 
 
 class Pesquisa:
-    def __init__(self, init):
+    def __init__(self, init, metodo):
         self.lista_pesquisa = ListaPesquisa
         self.init = init
         self.colors = self.init.brain.get_data_dict()['cores_programa']
+        self.metodo = metodo
 
         self.window_pesquisa = Toplevel()
         self.window_pesquisa.title("Pesquisa")
@@ -151,9 +152,12 @@ class Pesquisa:
 
     def pesquisar(self):
         if self.radio_base.get() == 1:
-            self.df_pesquisa = self.init.brain.get_pesquisa_code(
-                self.codigo_entrada.get())
-            self.data = self.codigo_entrada.get()
+            if len(self.codigo_entrada.get()) == 0:
+                self.init.brain.categoria_em_branco(
+                    self.window_pesquisa, 'código')
+            else:
+                self.df_pesquisa = self.init.brain.get_pesquisa_code(
+                    self.codigo_entrada.get())
         elif self.radio_base.get() == 2:
             self.data_pesquisa = [self.radio_venda.get(), self.cores_lista.curselection(), self.categoria_lista.curselection(
             ), self.genero_lista.curselection(), self.tamanho_lista.curselection(), self.marca_entrada.get().title(), self.desc_entrada.get()]
@@ -163,15 +167,27 @@ class Pesquisa:
         self.lista_pesquisa.criar_lista(
             self, self.df_pesquisa, self.window_pesquisa)
         self.window_pesquisa.update()
+        if len(self.df_pesquisa) == 0:
+            self.init.brain.pesquisa_vazia(self.window_pesquisa)
 
-    def editar_roupa(self):
+    def get_code(self):
         selection = self.resultado_lista.get(
             self.resultado_lista.curselection())
-        selection_code = int(selection.split(" ")[0][1:-1])
+        return int(selection.split(" ")[0][1:-1])
+
+    def editar_roupa(self):
+        selection_code = self.get_code()
         df_code = self.init.brain.get_pesquisa_code(selection_code)
         df_dict = self.init.brain.df_to_dict(df_code)
         self.window_pesquisa.destroy()
         self.init.reg(self.init, 'editor', df_dict)
 
     def adicionar_venda(self):
-        pass
+        selection_code = self.get_code()
+        if self.metodo == 'pesquisa':
+            self.window_pesquisa.destroy()
+            self.init.venda(produto=selection_code)
+
+        elif self.metodo == 'venda':
+            self.window_pesquisa.destroy()
+            self.init.adicionar_produto_pesquisa(selection_code)

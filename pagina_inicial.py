@@ -10,6 +10,8 @@ class Inicial:
     def __init__(self):
         self.brain = Brain
         self.reg = Registradora
+        self.pesquisar = Pesquisa
+        self.venda = Venda
         self.colors = self.brain.get_data_dict()['cores_programa']
 
         self.window_main = Tk()
@@ -36,13 +38,13 @@ class Inicial:
         self.window_main.mainloop()
 
     def registrar(self):
-        Registradora(self, 'registro', 0)
+        self.reg(self, 'registro')
 
     def buscar(self):
-        Pesquisa(self)
+        self.pesquisar(self, 'pesquisa')
 
     def iniciar_venda(self):
-        Venda(self)
+        self.venda()
 
 
 Inicial()

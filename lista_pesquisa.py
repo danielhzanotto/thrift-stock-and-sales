@@ -27,11 +27,19 @@ class ListaPesquisa:
 
         self.editar_button = Button(master=window, text="Abrir Info e Editar", width=23, font=(
             'Verdana', 10), bg=self.colors[1], fg=self.colors[4], highlightthickness=0, command=self.editar_roupa)
-        self.editar_button.grid(row=13, column=6, columnspan=2)
 
-        self.adicionar_button = Button(master=window, text="Iniciar Venda e Adicionar Peça", font=(
+        self.adicionar_button = Button(master=window, text="Adicionar Produto à Venda", font=(
             'Verdana', 10), bg=self.colors[1], fg=self.colors[4], width=30, highlightthickness=0, command=self.adicionar_venda)
-        self.adicionar_button.grid(row=13, column=8, columnspan=2)
+
+        if self.metodo == 'pesquisa':
+            self.editar_button.grid_forget()
+            self.adicionar_button.grid_forget()
+            self.editar_button.grid(row=13, column=6, columnspan=2)
+            self.adicionar_button.grid(row=13, column=8, columnspan=2)
+        elif self.metodo == 'venda':
+            self.editar_button.grid_forget()
+            self.adicionar_button.grid_forget()
+            self.adicionar_button.grid(row=13, column=8, columnspan=2)
 
     def criar_lista_roupas(self):
         return [f"[{roupa[1]}] {roupa[3]} ({roupa[4]}): {roupa[2]}" for roupa in self.roupas_pesquisa.itertuples()]

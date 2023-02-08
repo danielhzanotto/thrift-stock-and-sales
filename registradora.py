@@ -3,7 +3,7 @@ from tkinter import *
 
 class Registradora:
 
-    def __init__(self, init, metodo, roupa):
+    def __init__(self, init, metodo, roupa=0):
         self.init = init
         self.colors = self.init.brain.get_data_dict()['cores_programa']
 
@@ -166,7 +166,9 @@ class Registradora:
                     self.window_register.destroy()
 
     def cancelar(self):
-        self.window_register.destroy()
+        self.cancel = self.init.brain.confirmar_cancelar(self.window_register)
+        if self.cancel:
+            self.window_register.destroy()
 
     def checar_vazio(self):
         self.categoria_vazia = ""

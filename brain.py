@@ -110,7 +110,7 @@ class Brain:
 
     def continuar_cadastro(window, cod):
         return messagebox.askyesno(parent=window,
-                                   title="Cadastro Feito!", message=f"Sua peça foi cadastrada com o código {cod}!\nGostaria de continuar cadastrando?")
+                                   title="Cadastro Feito!", message=f"Seu produto foi cadastrado com o código {cod}!\nGostaria de cadastrar outro produto?")
 
     def confirmar_editar(window):
         return messagebox.askyesno(parent=window,
@@ -120,9 +120,21 @@ class Brain:
         return messagebox.showinfo(parent=window,
                                    title="Ooops!", message=f"Não deixe {cod} em branco!")
 
-    def venda_invalido(window, cod):
+    def venda_invalido(window):
         return messagebox.showinfo(parent=window,
                                    title="Ooops!", message=f"Valor de venda inválido!\nFavor não deixar zerado, igual ou menor que o valor de compra.")
+
+    def valor_invalido(window, cod):
+        return messagebox.showinfo(parent=window,
+                                   title="Ooops!", message=f"Valor de {cod} inválido...\nFavor informar {cod} válido!.")
+
+    def confirmar_cancelar(window):
+        return messagebox.askyesno(parent=window,
+                                   title="Confirmar cancelamento", message=f"Você tem certeza que gostaria de cancelar?\nTodas as informações serão perdidas.")
+
+    def pesquisa_vazia(window):
+        return messagebox.showinfo(parent=window,
+                                   title="Ooops!", message=f"Sua pesquisa não retornou resultado...\nConfira os filtros e tente novamente!.")
 
 
 class BrainVendas:
@@ -130,7 +142,8 @@ class BrainVendas:
         pass
 
     def gerar_cod_venda(self):
-        cod = "V" + str(randint(00000, 99999))
+        cod = "V" + str(randint(000, 999)) + "-" + \
+            dt.today().strftime('%y-%m-%d')
         cod_existe = self.checar_cod_venda_existe(self, cod)
         while cod_existe:
             cod = "V" + str(randint(00000, 99999))
@@ -150,8 +163,8 @@ class BrainVendas:
         produto_str = f"[{produto_dict['cod'][0]}]{produto_dict['categoria'][0]}: {produto_dict['desc'][0]}"
         produto_str_f = produto_str.ljust(
             52, "-") + f"R${produto_dict['valor_venda'][0]},00"
-        return [produto_str_f, int(produto_dict['valor_venda'][0])]
+        return [code, produto_str_f, int(produto_dict['valor_venda'][0])]
 
-    def confirmar_cancelar(window):
-        return messagebox.askyesno(parent=window,
-                                   title="Confirmar cancelamento", message=f"Você tem certeza que gostaria de cancelar?\nTodas as informações serão perdidas.")
+    def pegar_nomes_metodos(coluna, index):
+        df = pd.read_excel("data.xlsx", sheet_name="categorias")
+        return df[coluna][index]
