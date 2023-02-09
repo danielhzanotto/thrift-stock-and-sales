@@ -41,5 +41,12 @@ class ListaPesquisa:
             self.adicionar_button.grid_forget()
             self.adicionar_button.grid(row=13, column=8, columnspan=2)
 
+        self.contagem = Label(master=window, text=f"Resultados: {self.lista_pesquisa.pegar_comprimento_resultado(self)}", font=(
+            'Verdana', 9), bg=self.colors[0], fg=self.colors[3])
+        self.contagem.grid(row=2, column=9)
+
     def criar_lista_roupas(self):
         return [f"[{roupa[1]}] {roupa[3]} ({roupa[4]}): {roupa[2]}" for roupa in self.roupas_pesquisa.itertuples()]
+
+    def pegar_comprimento_resultado(self):
+        return len(self.resultado_lista.get(0, END))

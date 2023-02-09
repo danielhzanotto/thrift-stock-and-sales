@@ -1,13 +1,14 @@
-venda:
-    - código de venda (gerado)
-    - nome do cliente
-    - cidade
-    - modo de entrega (retirada, entrega, correios)
-    - itens (códigos e valor de venda)
-    - desconto
-    - forma de pagamento
-    - data (gerado)
-    - gerar comprovante (tipo nota fiscal)
+cadastrar produto
+gerar venda
+
+pesquisar produto
+pesquisar venda (TODO)
+
+devolução (TODO)
+
+gerar relatórios (TODO)
+configurações (TODO)
+
 
 pesquisar vendas:
     - por código
@@ -19,18 +20,32 @@ gerar relatórios:
 
 configurações:
     - nome do brechó
-    - info (cnpj, nome, endereço)
+    - info (cnpj, nome, endereço, site, instagram, telefone)
     - adicionar ou remover categorias
     - alterar valor de entrega Local
-    - limpar cache
+    - mensagem final cupom de venda
+
 
 devolução peça:
     - devolver peça
     - remover peça do estoque
 
 TODO:
-    - arrumar a pesquisa da venda para apenas aparecer produtos em estoque
-    - criar dicionario venda
-    - enviar dados venda pro banco de dados
-    - alterar dados do produto vendido 
     - gerar comprovante de venda
+        Vibe Verde Bazar
+        @intagram
+        site
+        Curitibanos - SC 
+        dia
+        -----
+        cliente info
+        -----
+        produtos
+        -----
+        valor total
+        desconto
+        valor entrega
+        valor final
+        -----
+        mensagem final
+

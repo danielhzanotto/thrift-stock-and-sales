@@ -5,7 +5,8 @@ class Registradora:
 
     def __init__(self, init, metodo, roupa=0):
         self.init = init
-        self.colors = self.init.brain.get_data_dict()['cores_programa']
+        self.colors = self.init.colors
+        self.categorias = self.init.brain.get_categorias_dict()
 
         self.metodo = metodo
         self.roupa = roupa
@@ -58,7 +59,7 @@ class Registradora:
             'Verdana', 9, "bold"), bg=self.colors[0], fg=self.colors[3])
         self.tamanho_label.grid(row=6, column=0, columnspan=2)
         tamanhos_var = Variable(
-            value=self.init.brain.get_data_dict()['tamanho'])
+            value=self.categorias['tamanho'])
         self.tamanhos_lista = Listbox(
             master=self.window_register, height=4, width=20, selectmode=MULTIPLE, listvariable=tamanhos_var, fg=self.colors[4], exportselection=0)
         self.tamanhos_lista.grid(row=7, column=0, columnspan=2)
@@ -66,7 +67,7 @@ class Registradora:
         self.genero_label = Label(self.window_register, text="Genero:", font=(
             'Verdana', 9, "bold"), bg=self.colors[0], fg=self.colors[3])
         self.genero_label.grid(row=6, column=2, columnspan=2)
-        generos_var = Variable(value=self.init.brain.get_data_dict()['genero'])
+        generos_var = Variable(value=self.categorias['genero'])
         self.genero_lista = Listbox(
             master=self.window_register, height=4, width=20, listvariable=generos_var, fg=self.colors[4], exportselection=0)
         self.genero_lista.grid(row=7, column=2, columnspan=2)
@@ -74,7 +75,7 @@ class Registradora:
         self.cores_label = Label(self.window_register, text="Cor:", font=(
             'Verdana', 9, "bold"), bg=self.colors[0], fg=self.colors[3])
         self.cores_label.grid(row=9, column=0, columnspan=2)
-        cores_var = Variable(value=self.init.brain.get_data_dict()['cor'])
+        cores_var = Variable(value=self.categorias['cor'])
         self.cores_lista = Listbox(
             master=self.window_register, height=8, width=20, listvariable=cores_var, selectmode=MULTIPLE, fg=self.colors[4], exportselection=0)
         self.cores_lista.grid(row=10, column=0, columnspan=2)
@@ -83,7 +84,7 @@ class Registradora:
             'Verdana', 9, "bold"), bg=self.colors[0], fg=self.colors[3])
         self.categoria_label.grid(row=9, column=2, columnspan=2)
         categorias_var = Variable(
-            value=self.init.brain.get_data_dict()['categoria'])
+            value=self.categorias['categoria'])
         self.categoria_lista = Listbox(
             master=self.window_register, height=8, width=20, listvariable=categorias_var, fg=self.colors[4], exportselection=0)
         self.categoria_lista.grid(row=10, column=2, columnspan=2)

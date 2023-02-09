@@ -8,7 +8,8 @@ class Venda:
         self.pesquisa = Pesquisa
         self.brain = Brain
         self.brain_vendas = BrainVendas
-        self.colors = self.brain.get_data_dict()['cores_programa']
+        self.colors = self.brain.get_categorias_dict()['cores_programa']
+        self.dados = self.brain.get_dados_dict()
 
         self.codigo = self.brain_vendas.gerar_cod_venda(self.brain_vendas)
         self.produtos_venda_final = []
@@ -284,25 +285,55 @@ class Venda:
         self.fill_value()
 
     def registrar_venda(self):
-        print(self.codigo)
-        print(self.nome_entrada.get().title())
-        print(self.cpf_entrada.get())  # tem que ter formato de cpf
-        print(self.cidade_entrada.get().title())
-        if len(self.estado_entrada.get()) != 2 and self.estado_entrada.get().isalpha():
-            self.brain.valor_invalido(self.window_venda, 'UF')
-            pass
-        else:
-            print(self.estado_entrada.get().upper())
-        print(self.produtos_venda_final)
-        print(self.valor_final)
-        print(self.valor_entrega)
-        print(self.brain_vendas.pegar_nomes_metodos('tipo_entrega',
-              self.entrega_state.get()))
-        print(self.valor_desconto)
+        if self.checar_erros_preenchimento():
+            self.venda = self.gerar_dict()
+            self.brain_vendas.gerar_venda(self.venda)
+            self.brain_vendas.gerar_cupom(self.brain_vendas,
+                                          self.venda, self.produto_lista.get(0, END), self.dados)
+            self.brain.venda_realizada(self.window_venda)
+            self.window_venda.destroy()
+
+    def checar_erros_preenchimento(self):
+        self.categoria_vazia = ""
+        if len(self.nome_entrada.get()) == 0:
+            self.categoria_vazia = "Nome"
+        elif len(self.produtos_venda_final) == 0:
+            self.categoria_vazia = "Carrinho"
+        elif self.pagamento_state.get() == 0:
+            self.categoria_vazia = "Tipo de Pagamento"
+
+        if len(self.estado_entrada.get()) != 2 or not self.estado_entrada.get().isalpha():
+            if len(self.estado_entrada.get()) != 0:
+                self.brain.valor_invalido(self.window_venda, 'UF')
+                return False
+
         if self.pagamento_state.get() == 0:
-            self.brain.categoria_em_branco(self.window_venda, 'PAGAMENTO')
+            self.brain.categoria_em_branco(
+                self.window_venda, 'Pagamento')
+            return False
+
+        if self.categoria_vazia == "":
+            return True
         else:
-            print(self.brain_vendas.pegar_nomes_metodos('tipo_pagamento',
-                                                        self.pagamento_state.get() - 1))
-            print(self.pagamento_state.get())
-        print(self.dia)
+            self.brain.categoria_em_branco(
+                self.window_venda, self.categoria_vazia)
+            return False
+
+    def gerar_dict(self):
+        return {
+            'cod_venda': self.codigo,
+            'nome_cliente': self.nome_entrada.get().title(),
+            'cpf': self.cpf_entrada.get(),
+            'cidade': self.cidade_entrada.get().title(),
+            'uf': self.estado_entrada.get().upper(),
+            'itens': self.brain_vendas.gerar_str_itens(self.produtos_venda_final),
+            'valor_total': float(sum(self.valor_venda_final)),
+            'valor_entrega': self.valor_entrega,
+            'tipo_entrega': self.brain_vendas.pegar_nomes_metodos('tipo_entrega',
+                                                                  self.entrega_state.get()),
+            'valor_desconto': self.valor_desconto,
+            'valor_final': self.valor_final,
+            'forma_pagamento': self.brain_vendas.pegar_nomes_metodos('tipo_pagamento',
+                                                                     self.pagamento_state.get() - 1),
+            'data': self.dia
+        }

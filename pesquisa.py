@@ -7,8 +7,9 @@ class Pesquisa:
     def __init__(self, init, metodo):
         self.lista_pesquisa = ListaPesquisa
         self.init = init
-        self.colors = self.init.brain.get_data_dict()['cores_programa']
+        self.colors = self.init.colors
         self.metodo = metodo
+        self.categorias = self.init.brain.get_categorias_dict()
 
         self.window_pesquisa = Toplevel()
         self.window_pesquisa.title("Pesquisa")
@@ -60,27 +61,28 @@ class Pesquisa:
         self.categoria_label = Label(self.window_pesquisa, text="Pesquisar Categoria:", font=(
             'Verdana', 9, 'bold'), bg=self.colors[0], fg=self.colors[3])
         categorias_var = Variable(
-            value=self.init.brain.get_data_dict()['categoria'])
+            value=self.categorias['categoria'])
         self.categoria_lista = Listbox(
             master=self.window_pesquisa, height=11, width=20, listvariable=categorias_var, fg=self.colors[4], selectmode=MULTIPLE, exportselection=0)
         # // pesquisar por cor
         self.cores_label = Label(self.window_pesquisa, text="Pesquisar Cor:", font=(
             'Verdana', 9, 'bold'), bg=self.colors[0], fg=self.colors[3])
-        cores_var = Variable(value=self.init.brain.get_data_dict()['cor'])
+        cores_var = Variable(
+            value=self.categorias['cor'])
         self.cores_lista = Listbox(
             master=self.window_pesquisa, height=11, width=15, listvariable=cores_var, selectmode=MULTIPLE, fg=self.colors[4], exportselection=0)
         # // pesquisar por genero
         self.genero_label = Label(self.window_pesquisa, text="Pesquisar Gênero:", font=(
             'Verdana', 9, 'bold'), bg=self.colors[0], fg=self.colors[3])
         genero_var = Variable(
-            value=self.init.brain.get_data_dict()['genero'])
+            value=self.categorias['genero'])
         self.genero_lista = Listbox(
             master=self.window_pesquisa, height=3, width=20, listvariable=genero_var, selectmode=MULTIPLE, fg=self.colors[4], exportselection=0)
         # // pesquisar por tamanho
         self.tamanho_label = Label(self.window_pesquisa, text="Pesquisar Tamanho:", font=(
             'Verdana', 9, 'bold'), bg=self.colors[0], fg=self.colors[3])
         tamanho_var = Variable(
-            value=self.init.brain.get_data_dict()['tamanho'])
+            value=self.categorias['tamanho'])
         self.tamanho_lista = Listbox(
             master=self.window_pesquisa, height=6, width=20, listvariable=tamanho_var, fg=self.colors[4], selectmode=MULTIPLE, exportselection=0)
 
@@ -95,6 +97,25 @@ class Pesquisa:
 
         self.pesquisar_button = Button(self.window_pesquisa, text="Pesquisar", font=(
             'Verdana', 10), bg=self.colors[1], fg=self.colors[4], width=42, highlightthickness=0, command=self.pesquisar)
+
+        if self.metodo == 'venda':
+            self.radio_code.grid_forget()
+            self.radio_categoria.grid_forget()
+            self.radio_base.set(2)
+            self.radio_venda.set(1)
+            self.desc_label.grid(row=5, column=0, columnspan=2)
+            self.desc_entrada.grid(row=5, column=2, columnspan=4)
+            self.marca_label.grid(row=6, column=0, columnspan=2)
+            self.marca_entrada.grid(row=6, column=2, columnspan=4)
+            self.categoria_label.grid(row=7, column=0, columnspan=2)
+            self.categoria_lista.grid(row=8, column=0, columnspan=2, rowspan=4)
+            self.cores_label.grid(row=7, column=2, columnspan=2)
+            self.cores_lista.grid(row=8, column=2, columnspan=2, rowspan=4)
+            self.genero_label.grid(row=7, column=4, columnspan=2)
+            self.genero_lista.grid(row=8, column=4, columnspan=2)
+            self.tamanho_label.grid(row=9, column=4, columnspan=2)
+            self.tamanho_lista.grid(row=10, column=4, columnspan=2)
+            self.pesquisar_button.grid(row=13, column=1, columnspan=5)
 
         self.window_pesquisa.mainloop()
 
@@ -185,8 +206,11 @@ class Pesquisa:
     def adicionar_venda(self):
         selection_code = self.get_code()
         if self.metodo == 'pesquisa':
-            self.window_pesquisa.destroy()
-            self.init.venda(produto=selection_code)
+            if self.init.brain.checar_se_vendido(selection_code):
+                self.init.brain.produto_vendido(self.window_pesquisa)
+            else:
+                self.window_pesquisa.destroy()
+                self.init.venda(produto=selection_code)
 
         elif self.metodo == 'venda':
             self.window_pesquisa.destroy()
