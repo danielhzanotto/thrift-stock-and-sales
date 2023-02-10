@@ -6,10 +6,13 @@ from datetime import datetime as dt
 
 
 class Brain:
+    '''methods to manipulate data from estoque and categorias'''
+
     def __init__(self):
         pass
 
     def get_categorias_dict():
+        '''pega as categorias e transforma em dicionário'''
         df = pd.read_excel("data.xlsx", sheet_name="categorias")
         dict_df = df.to_dict(orient='list')
         return {v[0]: [i for i in v[1] if str(i) != 'nan'] for v in dict_df.items()}
@@ -86,7 +89,6 @@ class Brain:
     def get_pesquisa(self, pesquisa_info):
         df = pd.read_excel("data.xlsx", sheet_name="estoque")
         data_info = self.get_categorias_dict()
-
         if pesquisa_info[0] == 1:
             df = df.loc[df["cod_venda"] == 0]
         elif pesquisa_info[0] == 2:
@@ -94,7 +96,8 @@ class Brain:
 
         for n in range(1, 5):
             if len(pesquisa_info[n]) != 0:
-                ind_list = [data_info[n][i] for i in pesquisa_info[n]]
+                ind_list = [list(data_info.values())[n][i]
+                            for i in pesquisa_info[n]]
                 df = self.get_pesquisa_list(
                     ind_list, list(data_info.keys())[n], df)
 
@@ -116,7 +119,7 @@ class Brain:
     def checar_se_vendido(produto):
         df = pd.read_excel("data.xlsx", sheet_name="estoque")
         df.loc[df['cod'] == produto]
-        return df['cod_venda'].values[0] == 0
+        return df['cod_venda'].values[0] != 0
 
     def continuar_cadastro(window, cod):
         return messagebox.askyesno(parent=window,

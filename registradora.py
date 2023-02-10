@@ -115,10 +115,6 @@ class Registradora:
                                             text="Ver valor de compra", variable=self.checked_state, command=self.checkbutton_see)
             self.see_password.grid(row=5, column=0, columnspan=2)
 
-            self.vender_button = Button(
-                self.window_register, text="Iniciar Venda", width=25, bg=self.colors[1], fg=self.colors[4], highlightthickness=0, font=('Verdana', 10), command=self.iniciar_venda)
-            self.vender_button.grid(row=13, column=0, columnspan=4)
-
             self.lista_selecionar()
             self.window_register.update()
 
@@ -153,7 +149,7 @@ class Registradora:
                     self.tamanhos_lista.selection_clear(0, END)
                     self.valor_compra_entrada.delete(0, END)
                     self.valor_venda_entrada.delete(0, END)
-                    self.radio_genero0.select()
+                    self.genero_lista.selection_clear(0, END)
                     self.cores_lista.selection_clear(0, END)
                     self.categoria_lista.selection_clear(0, END)
                     self.window_register.update()
@@ -219,6 +215,3 @@ class Registradora:
         for i in index:
             lista.select_set(i)
         lista.see(index[0])
-
-    def iniciar_venda(self):
-        pass

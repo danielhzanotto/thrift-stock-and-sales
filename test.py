@@ -1,40 +1,6 @@
-import pandas as pd
+info = {'cores_programa': ['#fefae0', '#dda15e', '#bc6c25', '#606c38', '#283618'], 'cor': ['Branco', 'Preto', 'Cinza', 'Marrom', 'Caramelo', 'Bege', 'Creme', 'Roxo', 'Lilás', 'Violeta', 'Azul', 'Azul-Acizentado', 'Azul-Jeans', 'Azul-Escuro', 'Azul-Claro', 'Verde-Escuro', 'Verde-Agua', 'Verde-Oliva', 'Verde', 'Verde-claro', 'Amarelo', 'Mostarda', 'Laranja-Claro', 'Laranja-Escuro', 'Vermelho', 'Bordo', 'Rosa', 'Rosa-Choque', 'Salmao'], 'categoria': ['Camiseta-Curta', 'Camiseta-Comprida', 'Camisa-Curta', 'Camisa-Comprida', 'Regata', 'Blusa', 'Top', 'Cropped', 'Colete',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                    'Casaco', 'Jaqueta', 'Blazer', 'Sobretudo', 'Kimono', 'Calça', 'Short', 'Jardineira', 'Vestido', 'Saia', 'Body', 'Banho', 'Bolsa', 'Acessorio', 'Calçado'], 'genero': ['Feminino', 'Masculino', 'Unissex'], 'tamanho': ['Nd', 'Epp', 'Pp', 'P', 'M', 'G', 'Gg', 'Egg', 'T30-', 'T30', 'T32', 'T33', 'T34', 'T35', 'T36', 'T37', 'T38', 'T39', 'T40', 'T41', 'T42', 'T43', 'T44', 'T45', 'T46', 'T47', 'T48', 'T49', 'T50', 'T50+'], 'tipo_entrega': ['Retirada', 'Correios', 'Entrega Local', 'Outros'], 'tipo_pagamento': ['Outro', 'Dinheiro', 'Crédito', 'Débito', 'Boleto', 'Pix']}
 
+teste = [0, (), (0,), (), (), '', '']
 
-teste = {
-    'cod_venda': "V-23-02-09-521",
-    'nome_cliente': 'Daniel Haas Zanotto',
-    'cpf': '01234567890',
-    'cidade': 'Curitibanos',
-    'uf': 'SC',
-    'itens': '65532 36280',
-    'valor_total': 80,
-    'valor_entrega': 5,
-    'tipo_entrega': 'Retirada',
-    'valor_desconto': 0,
-    'valor_final': 85,
-    'forma_pagamento': 'Pix',
-    'data': '2023-02-08'
-}
-
-
-# df_estoque = pd.read_excel("data.xlsx", sheet_name="estoque")
-# teste_df = pd.DataFrame(teste, index=[0])
-# print(teste_df)
-# print(teste_df['cod_venda'].values)
-# produtos = list(teste_df["itens"])[0].split(" ")
-# for produto in produtos:
-#     df_estoque.loc[df_estoque['cod'] == int(
-#         produto), 'cod_venda'] = teste_df['cod_venda'].values[0]
-
-
-# print(df_estoque)
-
-# df = pd.read_excel("data.xlsx", sheet_name="estoque")
-# df = df.loc[df['cod'] == 65532]
-# print(df['cod_venda'].values[0] == 0)
-comprovante = f"Vibe Verde Bazar\n@instagram\nsite.com.br\nCuritibanos-SC                 {teste['data']}\n--------------------\n{teste['nome_cliente']}\nCPF: {teste['cpf']}\n{teste['cidade']}-{teste['uf']}\n--------------------\n\nPRODUTOS\n\n--------------------\nValor Total:                     R${teste['valor_total']},00\nValor Desconto:                - R${teste['valor_desconto']},00\nValor Entrega:                 + R${teste['valor_entrega']},00\n                                 R${teste['valor_final']},00\n--------------------\nCOMPRE VERDE!"
-with open(f"comprovantes/{teste['cod_venda']}.txt", 'w') as f:
-    f.write(comprovante)
-
-str.l
+print(list(info.values())[0])
